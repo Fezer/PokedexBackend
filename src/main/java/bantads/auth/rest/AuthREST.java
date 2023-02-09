@@ -2,12 +2,6 @@ package bantads.auth.rest;
 
 
 import org.modelmapper.ModelMapper;
-import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -131,10 +125,6 @@ public class AuthREST {
 				"\"path\":\""+endpoint+"\"," +
 				"\"result\":\"error\"" +
 				"}";
-	}
-
-	public void deletarConta(final Message message, final Usuario usuario) {
-		repo.delete(usuario);
 	}
 
 }

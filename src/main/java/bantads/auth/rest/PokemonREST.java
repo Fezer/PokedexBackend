@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -54,6 +55,30 @@ public class PokemonREST {
 	public ResponseEntity<List<PokemonDTO>> listarTodos() {
 		
 		List<Pokemon> lista = repo.findAll();
+		
+		if(lista.isEmpty()) {
+			throw new AuthException(HttpStatus.NOT_FOUND, "Nenhum pokemon encontrado!");
+		}else {
+			return ResponseEntity.status(HttpStatus.OK).body(lista.stream().map(e -> mapper.map(e, PokemonDTO.class)).collect(Collectors.toList()));
+		}
+	}
+	
+	@GetMapping("/pokemons/tipo")
+	public ResponseEntity<List<PokemonDTO>> listarPorTipo(@RequestBody Pokemon request){
+		String tipo = request.getTipo();
+		Optional<Pokemon> lista = repo.findByTipoLike(tipo);
+		
+		if(lista.isEmpty()) {
+			throw new AuthException(HttpStatus.NOT_FOUND, "Nenhum pokemon encontrado!");
+		}else {
+			return ResponseEntity.status(HttpStatus.OK).body(lista.stream().map(e -> mapper.map(e, PokemonDTO.class)).collect(Collectors.toList()));
+		}
+	}
+	
+	@GetMapping("/pokemons/habilidade")
+	public ResponseEntity<List<PokemonDTO>> listarPorHabilidade(@RequestBody Pokemon request){
+		String habilidade = request.getHabilidades();
+		Optional<Pokemon> lista = repo.findByHabilidadeLike(habilidade);
 		
 		if(lista.isEmpty()) {
 			throw new AuthException(HttpStatus.NOT_FOUND, "Nenhum pokemon encontrado!");

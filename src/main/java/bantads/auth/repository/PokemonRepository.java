@@ -15,9 +15,9 @@ public interface PokemonRepository extends JpaRepository<Pokemon, Long> {
 	Optional<Pokemon> findByTipo(String tipo);
 
 	@Query("from Pokemon where tipo like CONCAT('%',:tipo,'%')")
-	Optional<Pokemon> findByTipoLike(String tipo);
+	List<Pokemon> findByTipoLike(String tipo);
 
 	@Query("from Pokemon where habilidades like CONCAT('%',:habilidade,'%')")
-	Optional<Pokemon> findByHabilidadeLike(String habilidade);
+	List<Pokemon> findByHabilidadeLike(String habilidade);
 	
 }

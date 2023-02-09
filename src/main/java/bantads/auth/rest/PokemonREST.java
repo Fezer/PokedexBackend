@@ -66,7 +66,7 @@ public class PokemonREST {
 	@GetMapping("/pokemons/tipo")
 	public ResponseEntity<List<PokemonDTO>> listarPorTipo(@RequestBody Pokemon request){
 		String tipo = request.getTipo();
-		Optional<Pokemon> lista = repo.findByTipoLike(tipo);
+		List<Pokemon> lista = repo.findByTipoLike(tipo);
 		
 		if(lista.isEmpty()) {
 			throw new AuthException(HttpStatus.NOT_FOUND, "Nenhum pokemon encontrado!");
@@ -78,7 +78,7 @@ public class PokemonREST {
 	@GetMapping("/pokemons/habilidade")
 	public ResponseEntity<List<PokemonDTO>> listarPorHabilidade(@RequestBody Pokemon request){
 		String habilidade = request.getHabilidades();
-		Optional<Pokemon> lista = repo.findByHabilidadeLike(habilidade);
+		List<Pokemon> lista = repo.findByHabilidadeLike(habilidade);
 		
 		if(lista.isEmpty()) {
 			throw new AuthException(HttpStatus.NOT_FOUND, "Nenhum pokemon encontrado!");

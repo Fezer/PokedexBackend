@@ -1,6 +1,5 @@
 package bantads.auth.rest;
 
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +23,6 @@ import bantads.auth.model.Pokemon;
 import bantads.auth.model.PokemonDTO;
 import bantads.auth.repository.PokemonRepository;
 
-
 @CrossOrigin
 @RestController
 public class PokemonREST {
@@ -35,107 +33,111 @@ public class PokemonREST {
 	@Autowired
 	private ModelMapper mapper;
 
-
 	@PostMapping("/pokemons")
 	public ResponseEntity<PokemonDTO> inserir(@RequestBody PokemonDTO Pokemon) {
 		String nome = Pokemon.getNome();
-		
+
 		Optional<Pokemon> pokemon = repo.findByNome(nome);
-		
-		if(pokemon.isPresent()) {
+
+		if (pokemon.isPresent()) {
 			throw new AuthException(HttpStatus.CONFLICT, "Pokemon já cadastrado!");
-		}else {
+		} else {
 			repo.save(mapper.map(Pokemon, Pokemon.class));
 			Optional<Pokemon> poke = repo.findByNome(Pokemon.getNome());
 			return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map(poke, PokemonDTO.class));
 		}
 	}
-	
+
 	@GetMapping("/pokemons")
 	public ResponseEntity<List<PokemonDTO>> listarTodos() {
-		
+
 		List<Pokemon> lista = repo.findAll();
-		
-		if(lista.isEmpty()) {
+
+		if (lista.isEmpty()) {
 			throw new AuthException(HttpStatus.NOT_FOUND, "Nenhum pokemon encontrado!");
-		}else {
-			return ResponseEntity.status(HttpStatus.OK).body(lista.stream().map(e -> mapper.map(e, PokemonDTO.class)).collect(Collectors.toList()));
+		} else {
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(lista.stream().map(e -> mapper.map(e, PokemonDTO.class)).collect(Collectors.toList()));
 		}
 	}
-	
+
 	@GetMapping("/pokemons/tipo")
-	public ResponseEntity<List<PokemonDTO>> listarPorTipo(@RequestBody Pokemon request){
-		String tipo = request.getTipo();
-		List<Pokemon> lista = repo.findByTipoLike(tipo);
-		
-		if(lista.isEmpty()) {
-			throw new AuthException(HttpStatus.NOT_FOUND, "Nenhum pokemon encontrado!");
-		}else {
-			return ResponseEntity.status(HttpStatus.OK).body(lista.stream().map(e -> mapper.map(e, PokemonDTO.class)).collect(Collectors.toList()));
+	public ResponseEntity<List<PokemonDTO>> listarPorTipo(@RequestParam String tipo) {
+		String tip = tipo;
+		if (tip.isBlank() || tip.isEmpty()) {
+			throw new AuthException(HttpStatus.BAD_REQUEST, "Nenhum tipo informado!");
+		} else {
+			List<Pokemon> lista = repo.findByTipoLike(tipo);
+
+			if (lista.isEmpty()) {
+				throw new AuthException(HttpStatus.NOT_FOUND, "Nenhum pokemon encontrado!");
+			} else {
+				return ResponseEntity.status(HttpStatus.OK)
+						.body(lista.stream().map(e -> mapper.map(e, PokemonDTO.class)).collect(Collectors.toList()));
+			}
 		}
 	}
-	
+
 	@GetMapping("/pokemons/habilidade")
-	public ResponseEntity<List<PokemonDTO>> listarPorHabilidade(@RequestBody Pokemon request){
-		String habilidade = request.getHabilidades();
-		List<Pokemon> lista = repo.findByHabilidadeLike(habilidade);
-		
-		if(lista.isEmpty()) {
-			throw new AuthException(HttpStatus.NOT_FOUND, "Nenhum pokemon encontrado!");
-		}else {
-			return ResponseEntity.status(HttpStatus.OK).body(lista.stream().map(e -> mapper.map(e, PokemonDTO.class)).collect(Collectors.toList()));
+	public ResponseEntity<List<PokemonDTO>> listarPorHabilidade(@RequestParam String habilidade) {
+		String hab = habilidade;
+		if (hab.isBlank() || hab.isEmpty()) {
+			throw new AuthException(HttpStatus.BAD_REQUEST, "Nenhuma habilidade informada!");
+		} else {
+			List<Pokemon> lista = repo.findByHabilidadeLike(habilidade);
+
+			if (lista.isEmpty()) {
+				throw new AuthException(HttpStatus.NOT_FOUND, "Nenhum pokemon encontrado!");
+			} else {
+				return ResponseEntity.status(HttpStatus.OK)
+						.body(lista.stream().map(e -> mapper.map(e, PokemonDTO.class)).collect(Collectors.toList()));
+			}
 		}
 	}
-	
+
 	@GetMapping("/pokemons/{id}")
-	public ResponseEntity<PokemonDTO> listaPokemon(@PathVariable Long id){
-		
+	public ResponseEntity<PokemonDTO> listaPokemon(@PathVariable Long id) {
+
 		Optional<Pokemon> pokemon = repo.findById(id);
-		if(pokemon.isEmpty()) {
+		if (pokemon.isEmpty()) {
 			throw new AuthException(HttpStatus.NOT_FOUND, "Pokemon não encontrado!");
-		}else {
+		} else {
 			return ResponseEntity.status(HttpStatus.OK).body(mapper.map(pokemon, PokemonDTO.class));
 		}
 	}
-	
+
 	@PutMapping("/pokemons/{id}")
-	public ResponseEntity<PokemonDTO> atualizar(@PathVariable Long id, @RequestBody PokemonDTO Pokemon){
-		
+	public ResponseEntity<PokemonDTO> atualizar(@PathVariable Long id, @RequestBody PokemonDTO Pokemon) {
+
 		Optional<Pokemon> user = repo.findById(id);
-		if(user.isEmpty()) {
+		if (user.isEmpty()) {
 			throw new AuthException(HttpStatus.NOT_FOUND, "Pokemon não encontrado!");
-		}else {
+		} else {
 			Pokemon.setId(id);
 			repo.save(mapper.map(Pokemon, Pokemon.class));
 			user = repo.findById(id);
 			return ResponseEntity.status(HttpStatus.OK).body(mapper.map(user, PokemonDTO.class));
 		}
 	}
-	
+
 	@DeleteMapping("/pokemons/{id}")
-	public ResponseEntity deletePokemon(@PathVariable Long id){
-		
+	public ResponseEntity deletePokemon(@PathVariable Long id) {
+
 		Optional<Pokemon> Pokemon = repo.findById(id);
-		if(Pokemon.isEmpty()) {
+		if (Pokemon.isEmpty()) {
 			throw new AuthException(HttpStatus.NOT_FOUND, "Pokemon não encontrado!");
-		}else {
+		} else {
 			repo.delete(mapper.map(Pokemon, Pokemon.class));
 			return ResponseEntity.status(HttpStatus.OK).body(null);
 		}
 	}
 
-	private String successFormat(String endpoint){
-		return "{" +
-				"\"path\":\""+endpoint+"\"," +
-				"\"result\":\"success\"" +
-				"}";
+	private String successFormat(String endpoint) {
+		return "{" + "\"path\":\"" + endpoint + "\"," + "\"result\":\"success\"" + "}";
 	}
 
-	private String errorFormat(String endpoint){
-		return "{" +
-				"\"path\":\""+endpoint+"\"," +
-				"\"result\":\"error\"" +
-				"}";
+	private String errorFormat(String endpoint) {
+		return "{" + "\"path\":\"" + endpoint + "\"," + "\"result\":\"error\"" + "}";
 	}
 
 }

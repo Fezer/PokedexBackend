@@ -19,7 +19,7 @@ public class Pokemon implements Serializable {
 	@Column(name = "hab_pok")
 	private String habilidades;
 	@Column(name = "foto_pok")
-	private byte[] foto;
+	private String foto;
 	@Column(name = "user_pok")
 	private String usuario;
 
@@ -27,7 +27,7 @@ public class Pokemon implements Serializable {
 		super();
 	}
 
-	public Pokemon(long id, String nome, String tipo, String habilidades, byte[] foto, String usuario) {
+	public Pokemon(long id, String nome, String tipo, String habilidades, String foto, String usuario) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -69,11 +69,11 @@ public class Pokemon implements Serializable {
 		this.habilidades = habilidades;
 	}
 
-	public byte[] getFoto() {
+	public String getFoto() {
 		return foto;
 	}
 
-	public void setFoto(byte[] foto) {
+	public void setFoto(String foto) {
 		this.foto = foto;
 	}
 

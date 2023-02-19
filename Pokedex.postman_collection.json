@@ -130,7 +130,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"login\":\"admin\",\r\n    \"senha\":\"admin\"\r\n}",
+							"raw": "{\r\n    \"login\":\"usuario1\",\r\n    \"senha\":\"usuario1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -284,6 +284,122 @@
 					"response": []
 				},
 				{
+					"name": "listPokemonsTopHabilidade",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5003/pokemons/habilidade/top",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"pokemons",
+								"habilidade",
+								"top"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listPokemonsTopTipo",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5003/pokemons/tipo/top",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"pokemons",
+								"tipo",
+								"top"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listPokemonsQuantidade",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5003/pokemons/quantidade",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"pokemons",
+								"quantidade"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "listPokemon",
 					"request": {
 						"method": "GET",
@@ -316,7 +432,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"nome\": \"Pokemon3\",\r\n    \"tipo\": \"Tipo3\",\r\n    \"habilidades\":\"Habilidade3\",\r\n    \"foto\":\"foto3\",\r\n    \"usuario\":\"usuario1\"\r\n}",
+							"raw": "{\r\n    \"nome\": \"Pokemon9\",\r\n    \"tipo\": \"Tipo4\",\r\n    \"habilidades\":\"Habilidade5\",\r\n    \"foto\":\"foto3\",\r\n    \"usuario\":\"usuario1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

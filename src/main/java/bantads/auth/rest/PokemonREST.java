@@ -19,9 +19,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import bantads.auth.exception.AuthException;
+import bantads.auth.exception.DAOException;
 import bantads.auth.model.Pokemon;
 import bantads.auth.model.PokemonDTO;
+import bantads.auth.model.TopPokemon;
 import bantads.auth.repository.PokemonRepository;
+import dao.ConnectionFactory;
+import dao.PokemonDAO;
 
 @CrossOrigin
 @RestController
@@ -62,7 +66,7 @@ public class PokemonREST {
 	}
 
 	@GetMapping("/pokemons/tipo")
-	public ResponseEntity<List<PokemonDTO>> listarPorTipo(@RequestParam String tipo) {
+	public ResponseEntity<List<PokemonDTO>> listarTipoTop(@RequestParam String tipo) {
 		String tip = tipo;
 		if (tip.isBlank() || tip.isEmpty()) {
 			throw new AuthException(HttpStatus.BAD_REQUEST, "Nenhum tipo informado!");
@@ -75,6 +79,23 @@ public class PokemonREST {
 				return ResponseEntity.status(HttpStatus.OK)
 						.body(lista.stream().map(e -> mapper.map(e, PokemonDTO.class)).collect(Collectors.toList()));
 			}
+		}
+	}
+	
+	@GetMapping("/pokemons/tipo/top")
+	public ResponseEntity<List<TopPokemon>> listarTipoTop() {
+		
+		try (ConnectionFactory con = new ConnectionFactory()) {
+			PokemonDAO dao = new PokemonDAO(con.getConnection());
+			List<TopPokemon> listaTop = dao.listarTopTipo();
+			if (listaTop.isEmpty()) {
+				throw new AuthException(HttpStatus.NOT_FOUND, "Nenhum pokemon encontrado!");
+			} else {
+				return ResponseEntity.status(HttpStatus.OK)
+						.body(listaTop.stream().map(e -> mapper.map(e, TopPokemon.class)).collect(Collectors.toList()));
+			}
+		}catch(DAOException ex) {
+			throw new AuthException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro!");
 		}
 	}
 
@@ -92,6 +113,38 @@ public class PokemonREST {
 				return ResponseEntity.status(HttpStatus.OK)
 						.body(lista.stream().map(e -> mapper.map(e, PokemonDTO.class)).collect(Collectors.toList()));
 			}
+		}
+	}
+	
+	@GetMapping("/pokemons/habilidade/top")
+	public ResponseEntity<List<TopPokemon>> listarHabilidadeTop() {
+		
+		try (ConnectionFactory con = new ConnectionFactory()) {
+			PokemonDAO dao = new PokemonDAO(con.getConnection());
+			List<TopPokemon> listaTop = dao.listarTopHabilidade();
+			if (listaTop.isEmpty()) {
+				throw new AuthException(HttpStatus.NOT_FOUND, "Nenhum pokemon encontrado!");
+			} else {
+				return ResponseEntity.status(HttpStatus.OK)
+						.body(listaTop.stream().map(e -> mapper.map(e, TopPokemon.class)).collect(Collectors.toList()));
+			}
+		}catch(DAOException ex) {
+			throw new AuthException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro!");
+		}
+	}
+	
+	@GetMapping("/pokemons/quantidade")
+	public ResponseEntity<TopPokemon> listarQuantidadePokemons() {
+		
+		try (ConnectionFactory con = new ConnectionFactory()) {
+			PokemonDAO dao = new PokemonDAO(con.getConnection());
+			int qnt = dao.listarQuantidadePokemons();
+			TopPokemon total = new TopPokemon();
+			total.setItem("total");
+			total.setQuantidade(qnt);
+			return ResponseEntity.status(HttpStatus.OK).body(mapper.map(total, TopPokemon.class));
+		}catch(DAOException ex) {
+			throw new AuthException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro!");
 		}
 	}
 

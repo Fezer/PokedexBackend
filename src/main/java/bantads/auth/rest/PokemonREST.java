@@ -18,6 +18,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.transaction.Transactional;
+
 import bantads.auth.exception.AuthException;
 import bantads.auth.exception.DAOException;
 import bantads.auth.model.Pokemon;
@@ -32,11 +36,15 @@ import dao.PokemonDAO;
 public class PokemonREST {
 
 	@Autowired
+	private EntityManagerFactory entityManagerFactory;
+	
+	@Autowired
 	private PokemonRepository repo;
 
 	@Autowired
 	private ModelMapper mapper;
 
+	@Transactional
 	@PostMapping("/pokemons")
 	public ResponseEntity<PokemonDTO> inserir(@RequestBody PokemonDTO Pokemon) {
 		String nome = Pokemon.getNome();
@@ -46,7 +54,17 @@ public class PokemonREST {
 		if (pokemon.isPresent()) {
 			throw new AuthException(HttpStatus.CONFLICT, "Pokemon já cadastrado!");
 		} else {
-			repo.save(mapper.map(Pokemon, Pokemon.class));
+			try {
+				
+				EntityManager entityManager = entityManagerFactory.createEntityManager();
+	            entityManager.getTransaction().begin();
+	            entityManager.persist(mapper.map(Pokemon, Pokemon.class));
+	            entityManager.getTransaction().commit();
+				
+			}
+			catch(Exception ex){
+				throw new AuthException(HttpStatus.BAD_REQUEST, "Erro cadastrar ao Pokemon!");
+			}
 			Optional<Pokemon> poke = repo.findByNome(Pokemon.getNome());
 			return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map(poke, PokemonDTO.class));
 		}

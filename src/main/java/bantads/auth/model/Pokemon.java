@@ -18,6 +18,7 @@ public class Pokemon implements Serializable {
 	private String tipo;
 	@Column(name = "hab_pok")
 	private String habilidades;
+	@Lob
 	@Column(name = "foto_pok")
 	private String foto;
 	@Column(name = "user_pok")
